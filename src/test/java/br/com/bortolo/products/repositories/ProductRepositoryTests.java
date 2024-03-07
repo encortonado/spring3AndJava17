@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.mockito.Mockito.*;
 
 
-public class ProductRepositoryTests {
+class ProductRepositoryTests {
 
 
     @Mock()
@@ -36,7 +36,7 @@ public class ProductRepositoryTests {
 
 
     @Test()
-    public void shouldSaveProductTest() {
+    void shouldSaveProductTest() {
 
         ProductModel product = this.productMaker();
 
@@ -55,14 +55,7 @@ public class ProductRepositoryTests {
     }
 
     @Test()
-    public void shouldUpdateProductTest() {
-
-        // coverage by saveProduct
-
-    }
-
-    @Test()
-    public void shouldGetProductTest() {
+    void shouldGetProductTest() {
 
         ProductModel product = this.productMaker();
 
@@ -83,7 +76,7 @@ public class ProductRepositoryTests {
     }
 
     @Test()
-    public void shouldDeleteProductTest() {
+    void shouldDeleteProductTest() {
 
         var id = UUID.randomUUID();
 
