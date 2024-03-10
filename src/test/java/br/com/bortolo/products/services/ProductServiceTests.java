@@ -1,6 +1,7 @@
 package br.com.bortolo.products.services;
 
 import br.com.bortolo.products.models.DTO.ProductDTO;
+import br.com.bortolo.products.models.DTO.ProductRecordDTO;
 import br.com.bortolo.products.models.ProductModel;
 import br.com.bortolo.products.repositories.ProductRepository;
 import org.assertj.core.api.Assertions;
@@ -12,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +44,7 @@ public class ProductServiceTests {
     @Test
     public void shouldSaveProductTest() {
 
-        var product = new ProductDTO("Mock name", new BigDecimal(10));
+        var product = new ProductRecordDTO("Mock name", new BigDecimal(10));
 
         when(productRepository.save(any(ProductModel.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -49,8 +52,8 @@ public class ProductServiceTests {
         var productSaved = productService.saveProduct(product);
 
         Assertions.assertThat(productSaved).isInstanceOf(ProductModel.class).isNotNull();
-        Assertions.assertThat(productSaved.getName()).isEqualTo(product.getName());
-        Assertions.assertThat(productSaved.getValue()).isEqualTo(product.getValue());
+        Assertions.assertThat(productSaved.getName()).isEqualTo(product.name());
+        Assertions.assertThat(productSaved.getValue()).isEqualTo(product.value());
         Assertions.assertThat(productSaved.getId()).isNotNull();
 
         verify(productRepository, times(1)).save(any(ProductModel.class));
@@ -65,7 +68,7 @@ public class ProductServiceTests {
         var product = productMaker();
         product.setId(id);
 
-        var newProduct = new ProductDTO("new Mock name", new BigDecimal(20));
+        var newProduct = new ProductRecordDTO("new Mock name", new BigDecimal(20));
 
         when(productRepository.findById(id)).thenReturn(Optional.of(product));
 
@@ -75,8 +78,8 @@ public class ProductServiceTests {
         var productUpdated = productService.updateProduct(id, newProduct);
 
         Assertions.assertThat(productUpdated).isNotEqualTo(product);
-        Assertions.assertThat(productUpdated.getName()).isEqualTo(newProduct.getName());
-        Assertions.assertThat(productUpdated.getValue()).isEqualTo(newProduct.getValue());
+        Assertions.assertThat(productUpdated.getName()).isEqualTo(newProduct.name());
+        Assertions.assertThat(productUpdated.getValue()).isEqualTo(newProduct.value());
 
         verify(productRepository, times(1)).findById(id);
         verify(productRepository, times(1)).save(any(ProductModel.class));
@@ -101,6 +104,23 @@ public class ProductServiceTests {
 
         verify(productRepository, times(1)).findById(any(UUID.class));
 
+    }
+
+    @Test
+    public void shouldListAllProducts() {
+
+        List<ProductModel> productModels = new ArrayList<>();
+
+        productModels.add(productMaker());
+        productModels.add(productMaker());
+
+        when(productRepository.findAll()).thenReturn(productModels);
+
+        var listProductsFound = productService.listAllProducts();
+
+        Assertions.assertThat(listProductsFound).isNotNull().isEqualTo(productModels);
+
+        verify(productRepository, times(1)).findAll();
     }
 
     @Test
